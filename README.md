@@ -17,8 +17,7 @@ All the message sent from the M-START Server will have in their address `/client
       Now parse it. In the following example, we have received a message after the user pressed a button on its HMI
   """
   if address.startswith("/client-send/startButton") :
-    println("The start button was pressed.") # Or any other operation you want to perform
-  }
+    print("The start button was pressed.") # Or any other operation you want to perform
   elif ... :
     # And so on
 ```
