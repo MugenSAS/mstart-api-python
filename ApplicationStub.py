@@ -1,5 +1,6 @@
 from OSC import OSCMessage
 from DataManagement import DataManagement
+from PiManager import PiManager
 import time
 
 """ This class is an application stub using the content of this API
@@ -22,9 +23,17 @@ class ApplicationStub(DataManagement) :
         else :
             """ Complete your process 
             """
+
+    def gpioEvent(self, id, rising) :
+
+        if id == ... :
+            # Start processing the event
+        else :
+            # Complete your process
          
       
-ap = ApplicationStub("Activity","192.168.0.1", 59900) #Replace here Activity    
+ap = ApplicationStub("Activity","192.168.0.1", 59900) #Replace here Activity
+pm = PiManager(ap, mode = ...) 
 
 while True :
     # Main loop
