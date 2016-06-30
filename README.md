@@ -27,7 +27,7 @@ All the messages sent from the M-START Server will have in their address `/clien
 ### Sending a message
 There are to ways to send a message:
 
-* using the convinience methods `sendMessageTo` or `sendMessagWithListValueTo
+* using the convinience methods `sendMessageTo` or `sendMessagWithListValueTo`
 ```python
   dm.sendMessageTo("/robot/object/axis/1/intprop/rotation", 356) # method to send a single value
   dm.sendMessageWithListValueTo("/robot/object/axis/1/locationprop/location", [44.840075, -0.716189, 48.0]) # method to send one or more values
