@@ -1,5 +1,5 @@
-# mstart-api-java
-This is the JAVA API to easily connect, send and receive messages from an M-START Server and use the gpio pins of the raspberry.
+# mstart-api-python
+This is the Python API to easily connect, send and receive messages from an M-START Server and use the gpio pins of the raspberry.
 
 ### The classes
 **ClientSocket** is the class which manages connection, sending and receiving messages from an M-START Server.
