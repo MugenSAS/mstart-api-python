@@ -125,6 +125,11 @@ v0.3.6 - 19 April 2010
 		Callbacks feature now a context (object oriented) but dynamic function
 		inspection keeps the code backward compatible
 	Moved testing code into separate testbench (testbench.py)
+	
+v0.4.0 - 1 March 2019
+	Fixed crash due to OSCMessage length > 127 bytes when sending the OSCMessage to the server
+	Fixed size calculation in OSCString regarding characters encoding
+	Python 3.6+ compliant
 
 -----------------
 Original Comments
@@ -159,7 +164,7 @@ Original Comments
 """
 
 import math, re, socket, select, string, struct, sys, threading, time, types, array, errno, inspect
-from socketserver import UDPServer, DatagramRequestHandler, ForkingMixIn, ThreadingMixIn, StreamRequestHandler, TCPServer
+from socketserver import UDPServer, DatagramRequestHandler, ThreadingMixIn, StreamRequestHandler, TCPServer
 from contextlib import closing
 
 global version
@@ -708,8 +713,10 @@ def OSCString(next):
 	The length of the resulting string is always a multiple of 4 bytes.
 	The string ends with 1 to 4 zero-bytes ('\x00') 
 	"""
-	
-	OSCstringLength = math.ceil((len(next)+1) / 4.0) * 4
+	l = str(next).encode()
+
+	OSCstringLength = math.ceil((len(l)+1) / 4.0) * 4
+
 	return struct.pack(">%ds" % (OSCstringLength), str(next).encode())
 
 def OSCBlob(next):
@@ -2348,7 +2355,7 @@ class OSCServer(UDPServer, OSCAddressSpace):
 		if addr_cmd in ('unsubscribe', 'silence', 'nosend', 'deltarget'):
 			return self._unsubscribe(data, client_address)
 
-class ForkingOSCServer(ForkingMixIn, OSCServer):
+class ForkingOSCServer(OSCServer):
 	"""An Asynchronous OSCServer.
 	This server forks a new process to handle each incoming request.
 	""" 
@@ -2501,11 +2508,10 @@ class OSCStreamRequestHandler(StreamRequestHandler, OSCAddressSpace):
 		try:
 			binary = msg.getBinary()
 			length = len(binary)
-			# prepend length of packet before the actual message (big endian)
-			#len_big_endian = array.array('c', '\0' * 4)##MODIF
+
 			len_big_endian = bytearray(4)
 			struct.pack_into(">L", len_big_endian, 0, length)
-			len_big_endian = len_big_endian.decode().encode()
+
 			if self._transmit(len_big_endian) and self._transmit(binary):
 				return True
 			return False			
@@ -2848,13 +2854,11 @@ class OSCStreamingClient(OSCAddressSpace):
 		if not isinstance(msg, OSCMessage):
 			raise TypeError("'msg' argument is not an OSCMessage or OSCBundle object")
 		binary = msg.getBinary()
-		length = len(binary)
-		# prepend length of packet before the actual message (big endian)
-		#len_big_endian = array.array('u', '\0' * 4) #MODIF
+		length = len(binary))
+
 		len_big_endian = bytearray(4)
 		struct.pack_into(">L", len_big_endian, 0, length)
-		#print("OSC len_big_endian1: ", len_big_endian)
-		len_big_endian = len_big_endian.decode().encode()
+
 		if self._transmitWithTimeout(len_big_endian) and self._transmitWithTimeout(binary):
 			return True
 		else:
