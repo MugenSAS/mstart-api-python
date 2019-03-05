@@ -2854,7 +2854,7 @@ class OSCStreamingClient(OSCAddressSpace):
 		if not isinstance(msg, OSCMessage):
 			raise TypeError("'msg' argument is not an OSCMessage or OSCBundle object")
 		binary = msg.getBinary()
-		length = len(binary))
+		length = len(binary)
 
 		len_big_endian = bytearray(4)
 		struct.pack_into(">L", len_big_endian, 0, length)
